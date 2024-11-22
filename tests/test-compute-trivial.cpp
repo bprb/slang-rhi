@@ -45,7 +45,7 @@ void testComputeTrivial(GpuTestContext* ctx, DeviceType deviceType)
             slang::SpecializationArg::fromType(modifierType)
         };
         ShaderOffset offset;
-        rootObject->setSpecializationArgs(offset, specArgs, 1);
+        rootObject->getEntryPoint(0)->setSpecializationArgs(offset, specArgs, 1);
         rootObject->finalize();
 
         auto passEncoder = encoder->beginComputePass();
