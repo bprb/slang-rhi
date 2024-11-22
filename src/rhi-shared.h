@@ -1629,16 +1629,17 @@ Result ShaderObjectBaseImpl<TShaderObjectImpl, TShaderObjectLayoutImpl, TShaderO
         {
             ExtendedShaderObjectTypeList typeArgs;
             Index objectIndex = bindingRange.subObjectIndex + subObjectIndexInRange;
-            auto subObject = m_objects[objectIndex];
-
-            if (!subObject)
-                continue;
 
             if (objectIndex < m_userProvidedSpecializationArgs.size() && m_userProvidedSpecializationArgs[objectIndex])
             {
                 args.addRange(*m_userProvidedSpecializationArgs[objectIndex]);
                 continue;
             }
+
+            auto subObject = m_objects[objectIndex];
+
+            if (!subObject)
+                continue;
 
             switch (bindingRange.bindingType)
             {
