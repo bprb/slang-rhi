@@ -22,6 +22,8 @@ struct Context
 class DeviceImpl : public Device
 {
 public:
+    static inline int32_t s_numAlive = 0;
+
     DeviceDesc m_desc;
     DeviceInfo m_info;
     std::string m_adapterName;
@@ -29,6 +31,7 @@ public:
     Context m_ctx;
     RefPtr<CommandQueueImpl> m_queue;
 
+    DeviceImpl() { ++s_numAlive; }
     ~DeviceImpl();
     virtual SLANG_NO_THROW Result SLANG_MCALL initialize(const DeviceDesc& desc) override;
 

@@ -1,12 +1,36 @@
-// compute-trivial.slang - Simple shader that takes a buffer and increments all elements by 1.
-
-uniform RWStructuredBuffer<float> buffer;
-
-[shader("compute")]
-[numthreads(4,1,1)]
-void computeMain(
-    uint3 sv_dispatchThreadID : SV_DispatchThreadID)
+interface IModifier
 {
-    var input = buffer[sv_dispatchThreadID.x];
-    buffer[sv_dispatchThreadID.x] = input + 1.0f;
+    float modify(float val);
+}
+
+float test(
+    float      value,
+    IModifier  modifier)
+{
+    return modifier.modify(value);
+}
+
+RWStructuredBuffer<float> buffer;
+
+struct Stuff
+{
+    IModifier modifier;
+}
+
+[numthreads(4, 1, 1)]
+void computeMain(
+    uniform Stuff stuff,
+    int3    dispatchThreadID : SV_DispatchThreadID)
+{
+    let tid       = dispatchThreadID.x;
+    let outputVal = test(buffer[tid], stuff.modifier);
+    buffer[tid]   = outputVal;
+}
+
+struct MyModifier : IModifier
+{
+    float modify(float val)
+    {
+        return val * 2.0;
+    }
 }

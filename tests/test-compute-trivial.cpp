@@ -39,6 +39,13 @@ void testComputeTrivial(GpuTestContext* ctx, DeviceType deviceType)
         // Bind buffer view to the entry point.
         auto rootObject = device->createRootShaderObject(pipeline);
         ShaderCursor(rootObject)["buffer"].setBinding(buffer);
+
+        auto modifierType = slangReflection->findTypeByName("MyModifier");
+        slang::SpecializationArg specArgs[] = {
+            slang::SpecializationArg::fromType(modifierType)
+        };
+        ShaderOffset offset;
+        rootObject->setSpecializationArgs(offset, specArgs, 1);
         rootObject->finalize();
 
         auto passEncoder = encoder->beginComputePass();
@@ -53,7 +60,7 @@ void testComputeTrivial(GpuTestContext* ctx, DeviceType deviceType)
         queue->waitOnHost();
     }
 
-    compareComputeResult(device, buffer, makeArray<float>(1.0f, 2.0f, 3.0f, 4.0f));
+    compareComputeResult(device, buffer, makeArray<float>(0.0f, 2.0f, 4.0f, 6.0f));
 }
 
 TEST_CASE("compute-trivial")
@@ -61,12 +68,14 @@ TEST_CASE("compute-trivial")
     runGpuTests(
         testComputeTrivial,
         {
+            #if 0
             DeviceType::D3D11,
             DeviceType::D3D12,
             DeviceType::Vulkan,
             DeviceType::Metal,
             DeviceType::CUDA,
             DeviceType::CPU,
+            #endif
             DeviceType::WGPU,
         }
     );

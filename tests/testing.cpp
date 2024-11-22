@@ -13,6 +13,10 @@
 
 #define ENABLE_SHADER_CACHE 0
 
+#include "../src/wgpu/wgpu-device.h" // topkek engineering (tm)
+// needs extra include paths:
+// src\
+// _deps\dawn-src\include\
 
 namespace rhi::testing {
 
@@ -378,6 +382,9 @@ void releaseCachedDevices()
 {
     gCachedDevices.clear();
     getRHI()->reportLiveObjects();
+
+    // too late to use REQUIRE_EQ here
+    assert(rhi::wgpu::DeviceImpl::s_numAlive == 0);
 }
 
 ComPtr<slang::ISession> createTestingSession(

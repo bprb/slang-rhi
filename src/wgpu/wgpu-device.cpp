@@ -39,6 +39,8 @@ DeviceImpl::~DeviceImpl()
 {
     m_shaderObjectLayoutCache = decltype(m_shaderObjectLayoutCache)();
     m_queue.setNull();
+
+    --s_numAlive;
 }
 
 Result DeviceImpl::getNativeDeviceHandles(DeviceNativeHandles* outHandles)
